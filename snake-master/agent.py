@@ -1,6 +1,8 @@
 from gameobjects import GameObject
 from move import Direction, Move
 
+import time
+
 
 class Agent:
     # just for the measurements how many food on average per trial
@@ -11,6 +13,11 @@ class Agent:
     # initilazie snake full body (head, body, tail. Its a map containing all body arts with head = 1 and tail = 1 of
     # the snake. Its to track all parts.
     snake = {}
+
+
+    # Used to calc run time of A* search funtion
+    total_runs_time = 0
+    total_runs = 0
 
     # Done by the teacher
     def get_move(self, board, score, turns_alive, turns_to_starve, direction):
@@ -127,8 +134,7 @@ class Agent:
 
         # gets the average  for A2 b), c)
         self.gameamount += 1
-        self.totalscore += self.score
-        print('------TOTALSCORE =', self.totalscore / self.gameamount, self.gameamount, '------')
+        print('------TOTALSCORE =', self.total_runs_time / self.total_runs,self.total_runs, self.gameamount, '------')
         pass
 
     # check sposition of each object on the board: board is a list fild with a map and its coordiantes and the
@@ -173,6 +179,8 @@ class Agent:
 
     #
     def a_search_shortest(self, start, goal, board_width, board_height, snake_head, snake_body, walls):
+        start_time = time.time()
+
         closedSet = []
         openSet = [start]  # first positon from which you wanne go next (head or food to next food)
         cameFrom = {}
@@ -186,6 +194,8 @@ class Agent:
         while openSet:
             current = self.lowest_fscore(fScore, openSet)
             if current == goal:
+                self.total_runs_time += time.time() - start_time
+                self.total_runs += 1
                 return self.reconstruct_path(cameFrom, start, goal)  # if you have found the goal
 
             # remove open set to the closed set
@@ -206,6 +216,8 @@ class Agent:
                 gScore[neighbour] = tentative_gScore
                 fScore[neighbour] = gScore[neighbour] + self.heuristic_cost_estimate(neighbour, goal)
 
+        self.total_runs_time += time.time() - start_time
+        self.total_runs += 1
         return False
 
     # reutn the absolut value  of the heuristic value of x ad y to get a final result to calculate with, every step
