@@ -201,6 +201,7 @@ class Agent:
                     openSet.append(neighbour)
                 elif tentative_gScore >= gScore[neighbour]:
                     continue
+
                 cameFrom[neighbour] = current
                 gScore[neighbour] = tentative_gScore
                 fScore[neighbour] = gScore[neighbour] + self.heuristic_cost_estimate(neighbour, goal)
